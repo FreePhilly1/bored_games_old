@@ -1,39 +1,29 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import Chat from './Chat.js'
+import { useEffect, useState, useContext } from 'react'
+import { SocketContext } from '../context/socket.js';
 
 export default function HomeMenu() {
-    const [code, setCode] = useState('');
+    const socket = useContext(SocketContext);
+    const [gameCode, setGameCode] = useState('');
+    const [username, setUsername] = useState('');
     const [gameData, setGameData] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const game = { code };
+        const game = { gameCode };
         console.log(game);
 
-        (async () => {
-            const res = await fetch("/ping");
-            const json = await res.text();
-            setGameData(gameData)
-            console.log(json);
-        })();          
+        if (gameCode !== "") {
+            socket.emit('join-room', gameCode);
+        }
 
-        // fetch("/ping").then(
-        //     response => response.text()
-        // ).then(
-        //     data => {setGameData(data)}
-        // )
-        // tick(1000)
-        // console.log(gameData)
-
-        // useEffect(() => {
-        //     //replace ping request with request to start a new game
-        //     fetch("/ping").then(
-        //         response => response.json()
-        //     ).then(
-        //         data => setGameData(data)
-        //     )
-        //     console.log(gameData)
-        // }, []);
+        // (async () => {
+        //     const res = await fetch("/ping");
+        //     const json = await res.text();
+        //     setGameData(gameData)
+        //     console.log(json);
+        // })();          
     }
 
     return (
@@ -41,17 +31,27 @@ export default function HomeMenu() {
         <h1>COUP</h1>
         <form onSubmit={handleSubmit}>
             <label>
+                Username:
+                <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+            </label>
+            <label>
                 Room Code:
                 <input
                     type="text"
                     required
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    value={gameCode}
+                    onChange={(e) => setGameCode(e.target.value)}
                 />
             </label>
             <input type="submit" value="enter"/>
-            <p>{code}</p>
+            <p>{gameCode}</p>
         </form>
+        <Chat gameCode={gameCode} username={username}></Chat>
     </div>
   )
 }
