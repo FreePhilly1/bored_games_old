@@ -12,18 +12,16 @@ function App() {
     <SocketContext.Provider value={socket}>
       <div className="App">
         <BrowserRouter>
-          <div>
-            <Routes>
-              <Route 
-                path="/"
-                element={<StartMenu/>}
-              ></Route>
-              <Route
-                path="/game/:gameid"
-                element={<Chat/>}
-              ></Route>
-            </Routes>
-          </div>
+          <Routes>
+            <Route 
+              path="/"
+              element={<StartMenu/>}
+            ></Route>
+            <Route
+              path="/game/:gameid"
+              element={<Chat/>}
+            ></Route>
+          </Routes>
         </BrowserRouter>
         
       </div>
