@@ -1,48 +1,37 @@
 import React from 'react';
-import Chat from '../components/Chat.js';
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from 'react';
 import { SocketContext } from '../contexts/socket.js';
-import { Link } from "react-router-dom";
 const axios = require('axios');
 
 export default function StartMenu() {
     const socket = useContext(SocketContext);
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomcode, setRoomcode] = useState('');
     const [gameData, setGameData] = useState(null);
 
     useEffect(() => {
         socket.on('room-created', (data) => {
-            console.log(data);
-
-        })
-        socket.on('room-code', (data) => {
-            console.log(data);
-        })
-        socket.on('game-state', (data) => {
-            setGameData(data);
+            navigate('/game/:gameid', { state: {roomcode: data}});
         })
     }, []);
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
-
         if (roomcode !== "") {
             let joinData = {username, roomcode};
-            console.log(joinData);
             socket.emit('join-room', joinData);
         }
     }
 
     const handleRoomCreate = (e) => {
         e.preventDefault();
-
         if (username !== "") {
             socket.emit('create-room', { username });
+            navigate('/game/:gameid');
         }
     }
-
-
 
     return (
     <div className='HomeMenu'>
@@ -57,9 +46,8 @@ export default function StartMenu() {
                     onChange={(e) => setUsername(e.target.value)}
                 />
             </label>
-            <p>{username}</p>
+            <input type="submit" value="Create Room"/>
         </form>
-        <button onClick={handleRoomCreate}>Create Room</button>
         <form onSubmit={handleRoomSubmit}>
             <label>
                 Room:
@@ -72,7 +60,6 @@ export default function StartMenu() {
             </label>
             <input type="submit" value="Join Room"/>
         </form>
-        <Link to="/game/:gameid">Chat</Link>
         {gameData &&
             <div>{JSON.stringify(gameData)}</div>
         }

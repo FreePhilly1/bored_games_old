@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //pages and components
 import StartMenu from './pages/StartPage';
-import Chat from './components/Chat';
+import GamePage from './pages/GamePage';
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
             ></Route>
             <Route
               path="/game/:gameid"
-              element={<Chat/>}
+              element={<GamePage/>}
             ></Route>
           </Routes>
         </BrowserRouter>
