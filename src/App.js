@@ -18,7 +18,7 @@ function App() {
               element={<StartMenu/>}
             ></Route>
             <Route
-              path="/game/:gameid"
+              path="/game/room"
               element={<GamePage/>}
             ></Route>
           </Routes>

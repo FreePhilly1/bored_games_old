@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from 'react';
 import { SocketContext } from '../contexts/socket.js';
 const axios = require('axios');
 
-export default function StartMenu() {
+export default function StartMenu(props) {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -12,8 +12,8 @@ export default function StartMenu() {
     const [gameData, setGameData] = useState(null);
 
     useEffect(() => {
-        socket.on('room-created', (data) => {
-            navigate('/game/:gameid', { state: {roomcode: data}});
+        socket.on('game-state', (data) => {
+            navigate('/game/room', { state: {gameState: data} });
         })
     }, []);
 
@@ -29,7 +29,6 @@ export default function StartMenu() {
         e.preventDefault();
         if (username !== "") {
             socket.emit('create-room', { username });
-            navigate('/game/:gameid');
         }
     }
 
@@ -60,9 +59,6 @@ export default function StartMenu() {
             </label>
             <input type="submit" value="Join Room"/>
         </form>
-        {gameData &&
-            <div>{JSON.stringify(gameData)}</div>
-        }
     </div>
   )
 }

@@ -8,8 +8,9 @@ import './Chat.css';
 var gameCode;
 var username;
 
-export default function () {
-    const socket = useContext(SocketContext)
+export default function (props) {
+    const socket = useContext(SocketContext);
+    const roomcode = props.roomcode;
 
     const [ currMsg, setCurrMsg ] = useState('');
     const [ messageList, setMessageList ] = useState([]);
@@ -21,9 +22,10 @@ export default function () {
                 username: username,
                 message: currMsg,
                 time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+                roomcode: roomcode
             }
             await socket.emit('send-message', messageData)
-            setMessageList((list) => [...list, messageData]);
+            // setMessageList((list) => [...list]);
             setCurrMsg('');
         }
     }
