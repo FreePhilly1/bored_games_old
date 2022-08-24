@@ -9,12 +9,22 @@ function GamePage(props) {
   let location = useLocation();
   const username = location.state.username;
   const [gameState, setGamestate] = useState(location.state.gameState);
+  console.log(gameState);
 
   useEffect(() => {
     socket.on('game-state', (data) => {
-        setGamestate(data);
-    })
-}, [socket]);
+      setGamestate(data);
+    }, [socket]);
+
+    socket.on('init-game-complete', (data) => {
+      console.log(data);
+    }, [socket]);
+    });
+
+  const initializeGame = async (e) => {
+    e.preventDefault();
+    await socket.emit('init-game', { roomcode: gameState.roomcode, players: gameState.players });
+  }
 
     
   return (
@@ -22,6 +32,7 @@ function GamePage(props) {
       <div>GamePage</div>
       <Chat roomcode={gameState.roomcode} username={username}/>
       {JSON.stringify(gameState)}
+      <button onClick={initializeGame}>Start Game</button>
     </>
   )
 }
