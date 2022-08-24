@@ -2,20 +2,18 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from 'react';
 import { SocketContext } from '../contexts/socket.js';
-const axios = require('axios');
 
 export default function StartMenu(props) {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomcode, setRoomcode] = useState('');
-    const [gameData, setGameData] = useState(null);
 
     useEffect(() => {
         socket.on('game-state', (data) => {
-            navigate('/game/room', { state: {gameState: data} });
+            navigate('/game/room', { state: {gameState: data, username } });
         })
-    }, []);
+    }, [socket, navigate, username]);
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();

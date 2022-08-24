@@ -6,11 +6,10 @@ import './Chat.css';
 
 
 var gameCode;
-var username;
 
-export default function (props) {
+export default function Chat(props) {
     const socket = useContext(SocketContext);
-    const roomcode = props.roomcode;
+    const { roomcode, username } = props;
 
     const [ currMsg, setCurrMsg ] = useState('');
     const [ messageList, setMessageList ] = useState([]);
