@@ -19,7 +19,7 @@ export default function StartMenu(props) {
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
-        if (roomcode !== "") {
+        if (roomcode !== "" && username !== "") {
             let joinData = {username, roomcode};
             socket.emit('join-room', joinData);
         }

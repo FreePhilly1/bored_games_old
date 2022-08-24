@@ -25,7 +25,7 @@ export default function (props) {
                 roomcode: roomcode
             }
             await socket.emit('send-message', messageData)
-            // setMessageList((list) => [...list]);
+            setMessageList((list) => [...list, messageData]);
             setCurrMsg('');
         }
     }
