@@ -11,7 +11,7 @@ export default function StartMenu(props) {
 
     useEffect(() => {
         socket.on('game-state', (data) => {
-            navigate('/game/room', { state: {gameState: data, username } });
+            navigate('/game/room', { state: {roomData: data, username } });
         })
     }, [socket, navigate, username]);
 
