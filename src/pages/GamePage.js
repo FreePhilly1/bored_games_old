@@ -19,11 +19,22 @@ function GamePage(props) {
     socket.on('init-game-complete', (data) => {
       setGameState(data);
     }, [socket]);
+
+    socket.on('new-gamestate', (data) => {
+      console.log(data.actionData);
+      setGameState(data.gameState);
+    })
     });
 
   const initializeGame = async (e) => {
     e.preventDefault();
     await socket.emit('init-game', { roomcode: roomData.roomcode, players: roomData.players });
+  }
+
+  const handleIncome = async (e) => {
+    e.preventDefault();
+    let actionData = {actionType: "income"}
+    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
   }
 
     
@@ -46,6 +57,7 @@ function GamePage(props) {
       {roomData.host === username &&
         <button onClick={initializeGame}>Start Game</button>
       }
+      <button onClick={handleIncome}>Income</button>
     </>
   )
 }
