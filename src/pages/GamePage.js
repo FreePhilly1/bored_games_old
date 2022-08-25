@@ -37,6 +37,30 @@ function GamePage(props) {
     await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
   }
 
+  const handleForeignAid = async (e) => {
+    e.preventDefault();
+    let actionData = {actionType: "foreign-aid"}
+    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+  }
+
+  const handleTax = async (e) => {
+    e.preventDefault();
+    let actionData = {actionType: "tax"}
+    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+  }
+
+  const handleSteal = async (e) => {
+    e.preventDefault();
+    let actionData = {actionType: "steal", target: 0}
+    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+  }
+
+  const handleCoup = async (e) => {
+    e.preventDefault();
+    let actionData = {actionType: "coup", target: 0}
+    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+  }
+
     
   return (
     <>
@@ -58,6 +82,10 @@ function GamePage(props) {
         <button onClick={initializeGame}>Start Game</button>
       }
       <button onClick={handleIncome}>Income</button>
+      <button onClick={handleForeignAid}>Foreign</button>
+      <button onClick={handleTax}>tax</button>
+      <button onClick={handleSteal}>steal</button>
+      <button onClick={handleCoup}>Coup</button>
     </>
   )
 }
