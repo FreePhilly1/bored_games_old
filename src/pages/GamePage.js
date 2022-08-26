@@ -97,7 +97,7 @@ function GamePage(props) {
       <div>
         {JSON.stringify(gameState)}
       </div>
-      {roomData.host === username &&
+      {roomData.host === username && !('players' in gameState) &&
         <button onClick={initializeGame}>Start Game</button>
       }
       {
@@ -114,16 +114,17 @@ function GamePage(props) {
       }
       <form>
         {
-          roomData.players.map((player) => {
+          roomData.players.map((player, idx) => {
             return (
               <>
                 <input
+                  key={`${idx}-target`}
                   type="radio"
                   name="target"
                   value={player}
                   onChange={(e) => setTarget(e.target.value)}
                 />
-                <label>{player}</label>
+                <label key={`${idx}-label`}>{player}</label>
                 <br/>
               </>
             )
