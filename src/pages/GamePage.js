@@ -10,8 +10,7 @@ function GamePage(props) {
   const username = location.state.username;
   const [roomData, setRoomData] = useState(location.state.roomData);
   const [gameState, setGameState] = useState(roomData.gameState);
-  const [target, setTarget] = useState(0);
-  const myIdx = roomData.players.indexOf(username);
+  const [target, setTarget] = useState("");
 
   useEffect(() => {
     socket.on('game-state', (data) => {
@@ -54,7 +53,9 @@ function GamePage(props) {
   const handleSteal = async (e) => {
     e.preventDefault();
     let actionData = {actionType: "steal", target}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    if (target) {
+      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    }
   }
 
   const handleExchange = async (e) => {
@@ -66,13 +67,17 @@ function GamePage(props) {
   const handleAssassinate = async (e) => {
     e.preventDefault();
     let actionData = {actionType: "assassinate", target}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    if (target) {
+      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    }
   }
 
   const handleCoup = async (e) => {
     e.preventDefault();
     let actionData = {actionType: "coup", target}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    if (target) {
+      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    }
   }
 
     
@@ -87,9 +92,6 @@ function GamePage(props) {
         Players: {roomData.players.toString()}
       </div>
       <div>
-        myIdx: {myIdx}
-      </div>
-      <div>
         Host: {roomData.host}
       </div>
       <div>
@@ -98,26 +100,35 @@ function GamePage(props) {
       {roomData.host === username &&
         <button onClick={initializeGame}>Start Game</button>
       }
-      <button onClick={handleIncome}>Income</button>
-      <button onClick={handleForeignAid}>Foreign</button>
-      <button onClick={handleTax}>tax</button>
-      <button onClick={handleSteal}>steal</button>
-      <button onClick={handleExchange}>exchange</button>
-      <button onClick={handleAssassinate}>assassinate</button>
-      <button onClick={handleCoup}>Coup</button>
+      {
+        gameState.turn === username &&
+        <div>
+          <button onClick={handleIncome}>Income</button>
+          <button onClick={handleForeignAid}>Foreign</button>
+          <button onClick={handleTax}>tax</button>
+          <button onClick={handleSteal}>steal</button>
+          <button onClick={handleExchange}>exchange</button>
+          <button onClick={handleAssassinate}>assassinate</button>
+          <button onClick={handleCoup}>Coup</button>
+        </div>
+      }
       <form>
         {
-          roomData.players.map((player, idx) => {
-            console.log(player, idx);
+          roomData.players.map((player) => {
             return (
               <>
-                <input type="radio" id={`${player}-target`} name="target" value={idx}/>
-                <label for={`${player}-target`}>{player}</label>
+                <input
+                  type="radio"
+                  name="target"
+                  value={player}
+                  onChange={(e) => setTarget(e.target.value)}
+                />
+                <label>{player}</label>
                 <br/>
               </>
             )
-          }
-        )}
+          })
+        }
       </form>
     </>
   )

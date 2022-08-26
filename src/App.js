@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { SocketContext, socket } from './contexts/socket.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
