@@ -11,6 +11,9 @@ function GamePage(props) {
   const [roomData, setRoomData] = useState(location.state.roomData);
   const [gameState, setGameState] = useState(roomData.gameState);
   const [target, setTarget] = useState("");
+  const [currAction, setCurrAction] = useState(null);
+  const [guess, setGuess] = useState("");
+  const [challengeIP, setChallengeIP] = useState(false);
 
   useEffect(() => {
     socket.on('game-state', (data) => {
@@ -22,8 +25,17 @@ function GamePage(props) {
     }, [socket]);
 
     socket.on('new-gamestate', (data) => {
-      console.log(data.actionData);
+      setCurrAction(data.actionData);
       setGameState(data.gameState);
+    });
+
+    socket.on('check-challenge-block', (data) => {
+      setCurrAction(data);
+      setChallengeIP(true);
+    });
+
+    socket.on('challenge-received', () => {
+      setChallengeIP(false);
     })
   });
 
@@ -34,52 +46,69 @@ function GamePage(props) {
 
   const handleIncome = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "income"}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    let actionData = {actionType: "income", user: gameState.turn}
+    await socket.emit('nochallenge-card-action', { roomcode: roomData.roomcode, actionData });
   }
 
   const handleForeignAid = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "foreign-aid"}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    let actionData = {actionType: "foreign-aid", user: gameState.turn}
+    await socket.emit('start-special-card', { roomcode: roomData.roomcode, actionData });
   }
 
   const handleTax = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "tax"}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    let actionData = {actionType: "tax", user: gameState.turn}
+    await socket.emit('start-special-card', { roomcode: roomData.roomcode, actionData });
   }
 
   const handleSteal = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "steal", target}
+    let actionData = {actionType: "steal", user: gameState.turn, target}
     if (target) {
-      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+      await socket.emit('start-special-card', { roomcode: roomData.roomcode, actionData });
     }
   }
 
   const handleExchange = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "exchange"}
-    await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    let actionData = {actionType: "exchange", user: gameState.turn}
+    await socket.emit('start-special-card', { roomcode: roomData.roomcode, actionData });
   }
 
   const handleAssassinate = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "assassinate", target}
+    let actionData = {actionType: "assassinate", user: gameState.turn, target}
     if (target) {
-      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+      await socket.emit('start-special-card', { roomcode: roomData.roomcode, actionData });
     }
   }
 
   const handleCoup = async (e) => {
     e.preventDefault();
-    let actionData = {actionType: "coup", target}
-    if (target) {
-      await socket.emit('card-action', { roomcode: roomData.roomcode, actionData });
+    let actionData = {actionType: "coup", user: gameState.turn, target, guess}
+    if (target && guess) {
+      await socket.emit('nochallenge-card-action', { roomcode: roomData.roomcode, actionData });
     }
   }
 
+  const handleChallenge = async (e) => {
+    e.preventDefault();
+    let data = {user: username, action: "challenge"};
+    await socket.emit("challenge-response", {roomcode: roomData.roomcode, data});
+  }
+
+  const handleBlock = async (e) => {
+    e.preventDefault();
+    let data = {user: username, action: "block"};
+    await socket.emit("challenge-response", {roomcode: roomData.roomcode, data});
+  }
+
+  const handleNoAction = async (e) => {
+    e.preventDefault();
+    let data = {user: username, action: ""};
+    await socket.emit("challenge-response", {roomcode: roomData.roomcode, data});
+  }
     
   return (
     <>
@@ -112,6 +141,10 @@ function GamePage(props) {
           <button onClick={handleCoup}>Coup</button>
         </div>
       }
+      {
+        currAction && 
+          <div>{JSON.stringify(currAction)}</div>
+      }
       <form>
         {
           roomData.players.map((player, idx) => {
@@ -131,6 +164,78 @@ function GamePage(props) {
           })
         }
       </form>
+      <div>Guess:</div>
+      <form>
+        <input
+          type="radio"
+          name="guess"
+          value="assassin"
+          onChange={(e) => setGuess(e.target.value)}
+        />
+        <label key="assassin-target">assassin</label>
+        <br/>
+        <input
+          type="radio"
+          name="guess"
+          value="contessa"
+          onChange={(e) => setGuess(e.target.value)}
+        />
+        <label key="contessa-target">contessa</label>
+        <br/>
+        <input
+          type="radio"
+          name="guess"
+          value="ambassador"
+          onChange={(e) => setGuess(e.target.value)}
+        />
+        <label key="ambassador-target">ambassador</label>
+        <br/>
+        <input
+          type="radio"
+          name="guess"
+          value="duke"
+          onChange={(e) => setGuess(e.target.value)}
+        />
+        <label key="duke-target">duke</label>
+        <br/>
+        <input
+          type="radio"
+          name="guess"
+          value="captain"
+          onChange={(e) => setGuess(e.target.value)}
+        />
+        <label key="captain-target">captain</label>
+        <br/>
+      </form>
+      {
+        currAction && currAction.user !== username &&
+          challengeIP &&
+          (currAction.actionType === "foreign-aid" ||
+          currAction.actionType === "assassinate" ||
+          currAction.actionType === "tax" || 
+          currAction.actionType === "exchange" ||
+          currAction.actionType === "steal") &&
+          <button onClick={handleBlock}>Block</button>
+      }
+      {
+        currAction && currAction.user !== username &&
+          challengeIP &&
+          (currAction.actionType === "assassinate" ||
+          currAction.actionType === "tax" || 
+          currAction.actionType === "exchange" ||
+          currAction.actionType === "steal") &&
+          <button onClick={handleChallenge}>Challenge</button>
+      }
+      {
+        currAction && currAction.user !== username &&
+          challengeIP &&
+          (currAction.actionType === "foreign-aid" ||
+          currAction.actionType === "assassinate" ||
+          currAction.actionType === "tax" || 
+          currAction.actionType === "exchange" ||
+          currAction.actionType === "steal") &&
+          <button onClick={handleNoAction}>No action</button>
+      }
     </>
   )
 }
