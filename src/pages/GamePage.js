@@ -14,6 +14,7 @@ function GamePage(props) {
   const [currAction, setCurrAction] = useState(null);
   const [guess, setGuess] = useState("");
   const [challengeIP, setChallengeIP] = useState(false);
+  const [ambassadorCards, setAmbassadorCards] = useState([]);
 
   useEffect(() => {
     socket.on('game-state', (data) => {
@@ -39,6 +40,7 @@ function GamePage(props) {
     });
 
     socket.on('choose-exchange', (data) => {
+      console.log(data);
       setGameState(data);
     })
   });
@@ -112,6 +114,28 @@ function GamePage(props) {
     e.preventDefault();
     let data = {user: username, action: ""};
     await socket.emit("challenge-response", {roomcode: roomData.roomcode, data});
+  }
+
+  const handleCardExchange = (e) => {
+    let cardIdx = e.target.value;
+    let find = ambassadorCards.indexOf(cardIdx);
+    let arr = ambassadorCards;
+    if (find > -1) {
+      arr.splice(find, 1);
+    } else {
+      if (ambassadorCards.length <= 1) {
+        arr.push(cardIdx);
+      }
+    }
+    setAmbassadorCards(ambassadorCards);
+    console.log(ambassadorCards);
+  }
+
+  const handleCardExchangeSubmit = async (e) => {
+    e.preventDefault();
+    if (ambassadorCards.length == 2) {
+      await socket.emit("exchange-selected", {ambassadorCards, roomcode: roomData.roomcode});
+    }
   }
     
   return (
@@ -240,26 +264,28 @@ function GamePage(props) {
           currAction.actionType === "steal") &&
           <button onClick={handleNoAction}>No action</button>
       }
-      {/* {
-        gameState && gameState.players[username].cards.length > 2 && 
-        <form>
-        {
-          gameState.players[username].cards.map((card, idx) => {
-            return (
-              <>
-                <input
-                  type="checkbox"
-                  name="target"
-                  value={idx}
-                />
-                <label>{card}</label>
-                <br/>
-              </>
-            )
-          })
+      {gameState.hasOwnProperty('players') && gameState.players[username].cards.length > 2 &&
+      <>
+      <form onChange={handleCardExchange}>
+        {gameState.players[username].cards.map((card, idx) => {
+          return (
+            <>
+              <input
+                type="checkbox"
+                name="target"
+                value={idx}
+                handleOnChange={handleCardExchange}
+              />
+              <label>{card}</label>
+              <br/>
+            </>
+          )
+        })
         }
       </form>
-      } */}
+      <button onClick={handleCardExchangeSubmit}>Submit Exchange</button>
+      </>
+      }
     </>
   )
 }
