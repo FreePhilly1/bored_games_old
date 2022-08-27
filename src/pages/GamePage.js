@@ -36,6 +36,10 @@ function GamePage(props) {
 
     socket.on('challenge-received', () => {
       setChallengeIP(false);
+    });
+
+    socket.on('choose-exchange', (data) => {
+      setGameState(data);
     })
   });
 
@@ -236,6 +240,26 @@ function GamePage(props) {
           currAction.actionType === "steal") &&
           <button onClick={handleNoAction}>No action</button>
       }
+      {/* {
+        gameState && gameState.players[username].cards.length > 2 && 
+        <form>
+        {
+          gameState.players[username].cards.map((card, idx) => {
+            return (
+              <>
+                <input
+                  type="checkbox"
+                  name="target"
+                  value={idx}
+                />
+                <label>{card}</label>
+                <br/>
+              </>
+            )
+          })
+        }
+      </form>
+      } */}
     </>
   )
 }
