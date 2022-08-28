@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import Chat from '../components/Chat.js';
+import Players from '../components/Players.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 
@@ -137,7 +138,8 @@ function GamePage(props) {
       await socket.emit("exchange-selected", {ambassadorCards, roomcode: roomData.roomcode});
     }
   }
-    
+  
+  console.log(gameState);
   return (
     <>
       <div>GamePage</div>
@@ -151,6 +153,7 @@ function GamePage(props) {
       <div>
         Host: {roomData.host}
       </div>
+      <Players gameState={gameState}/>
       <div>
         {JSON.stringify(gameState)}
       </div>
