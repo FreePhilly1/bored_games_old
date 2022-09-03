@@ -1,0 +1,141 @@
+* {
+    font-family: 'Abel', sans-serif;
+    font-size:100%;
+}
+
+.background {
+    height: 100vh;
+    background-color: #2d3038;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu {
+    width: 500px;
+    height: 350px;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    position:relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 3em;
+    color: white;
+}
+
+.back-button {
+    position: relative;
+    left: -250px;
+    top: -100px;
+    width: 20px;
+    height:20px;
+    cursor: pointer;
+    color: white;
+}
+
+.menu-body {
+    display: flex;
+    width: 500px;
+    justify-content: center;
+}
+
+.form-div, .text-form {
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.form-label {
+    display: block;
+    color: white;
+}
+
+.form-text-input {
+    border-radius: 10px;
+    padding:15px;
+    margin: 5px;
+}
+
+.form-button {
+    width: 120px;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: orange;
+    cursor: pointer;
+    transition: filter 300ms;
+}
+
+.form-button:hover {
+    filter: brightness(1.2);
+}
+
+.submit-button {
+    background-color: green;
+}
+
+/* animations */
+.select-menu-enter {
+    position:relative;
+    transform: translateX(-300%);
+}
+
+.select-menu-enter-active {
+    transform: translateX(0);
+    transition: all var(--speed) ease;
+}
+
+.select-menu-exit {
+    position:relative;
+}
+
+.select-menu-exit-active {
+    transform: translateX(-300%);
+    transition: all var(--speed) ease;
+}
+
+.create-menu-enter {
+    position:absolute;
+    transform: translateX(300%);
+}
+
+.create-menu-enter-active {
+    transform: translateX(0);
+    transition: all var(--speed) ease;
+}
+
+.create-menu-exit {
+    position:absolute;
+}
+.create-menu-exit-active {
+    transform: translateX(300%);
+    transition: all var(--speed) ease;
+}
+
+.join-menu-enter {
+    position:absolute;
+    transform: translateX(300%);
+}
+
+.join-menu-enter-active {
+    transform: translateX(0);
+    transition: all var(--speed) ease;
+}
+
+.join-menu-exit {
+    position:absolute;
+}
+
+.join-menu-exit-active {
+    transform: translateX(300%);
+    transition: all var(--speed) ease;
+}

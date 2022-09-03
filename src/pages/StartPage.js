@@ -2,18 +2,24 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from 'react';
 import { SocketContext } from '../contexts/socket.js';
+import './StartPage.css';
+import '../styles.css';
+import { CSSTransition } from 'react-transition-group';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-export default function StartMenu(props) {
+export default function StartPage(props) {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomcode, setRoomcode] = useState('');
+    const [creatingGame, setCreatingGame] = useState(false);
+    const [joiningGame, setJoiningGame] = useState(false);
 
     useEffect(() => {
         socket.on('game-state', (data) => {
             navigate('/game/room', { state: {roomData: data, username } });
-        })
-    }, [socket, navigate, username]);
+        }) 
+    }, [socket]);
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
@@ -30,42 +36,198 @@ export default function StartMenu(props) {
         }
     }
 
-    return (
-    <div className='HomeMenu' style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: "#2d3038"}}>
-        <h1 style={{color: "white"}}>COUP</h1>
-        <form style={{margin: 20}} onSubmit={handleRoomCreate}>
-            <label style={{color: "white"}}>
-                Username:
+    let menuNavigationButton;
+    const menuBack = () => {
+        setCreatingGame(false);
+        setJoiningGame(false);
+    }
+
+
+
+    let menuBody;
+    if (!joiningGame && !creatingGame) {
+        menuBody = 
+            <CSSTransition
+                in={!joiningGame && !creatingGame}
+                unmountOnExit
+                timeout={800}
+                classNames='select-menu'
+            >
+            <div className='form-div'>
+                <button className='form-button' onClick={() => setCreatingGame(true)}>
+                    Create Game
+                </button>
+                <button className='form-button' onClick={() => setJoiningGame(true)}>
+                    Join Game
+                </button>
+            </div>
+            </CSSTransition>
+    } else if (creatingGame) {
+        menuNavigationButton = <ArrowBackIosIcon className='back-button' onClick={menuBack}/>
+        menuBody = 
+            <CSSTransition
+                in={creatingGame}
+                unmountOnExit
+                timeout={800}
+                classNames='create-menu'
+            >
+                <form className='text-form' onSubmit={handleRoomCreate}>
+                    <label className='form-label'>
+                        Username:
+                    </label>
+                    <input
+                            className='form-text-input'
+                            type="text"
+                            required
+                            placeholder='Username'
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    <input
+                        className='form-button submit-button'
+                        type="submit"
+                        value="Create Room"
+                    />
+                </form>
+            </CSSTransition>
+    } else if (joiningGame) {
+        menuNavigationButton = <ArrowBackIosIcon className='back-button' onClick={menuBack}/>
+        menuBody = 
+            <form className='text-form' onSubmit={handleRoomSubmit}>
+                <div>
+                    <div style={{display:'inline-block'}}>
+                        <label className='form-label'>
+                            Username:
+                        </label>
+                        <input
+                            className='form-text-input'
+                            type="text"
+                            required
+                            placeholder='Username'
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+                    <div style={{display:'inline-block'}}>
+                        <label className='form-label'>
+                            Room Code:
+                        </label>
+                        <input 
+                            className='form-text-input'
+                            type="text"
+                            required
+                            placeholder='Room Code'
+                            value={roomcode}
+                            onChange={(e) => setRoomcode(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <input
-                    style= {{borderRadius: '5px', height: '50px'}}
-                    type="text"
-                    required
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    className='form-button submit-button'
+                    type="submit"
+                    value="Join Room"
                 />
-            </label>
-            <input
-                style={{borderRadius: '10px', backgroundColor: 'green', height: '50px', marginLeft: 20}}
-                type="submit"
-                value="Create Room"
-            />
-        </form>
-        <form onSubmit={handleRoomSubmit}>
-            <label style={{color: "white"}}>
-                Room:
-                <input style={{borderRadius: '5px', height: 50}}
-                    type="text"
-                    required
-                    value={roomcode}
-                    onChange={(e) => setRoomcode(e.target.value)}
-                />
-            </label>
-            <input
-                style={{borderRadius: '10px', backgroundColor: 'orange', height: 50, marginLeft: 20}}
-                type="submit"
-                value="Join Room"
-            />
-        </form>
+            </form>
+    }
+
+    return (
+    <div className='background'>
+        <div className='menu'>
+            {/* {menuNavigationButton} */}
+            <h1 className='title'>COUP</h1>
+            <div className='menu-body'>
+                <CSSTransition
+                    in={!joiningGame && !creatingGame}
+                    unmountOnExit
+                    timeout={800}
+                    classNames='select-menu'
+                >
+                    <div className='form-div'>
+                        <button className='form-button' onClick={() => setCreatingGame(true)}>
+                            Create Game
+                        </button>
+                        <button className='form-button' onClick={() => setJoiningGame(true)}>
+                            Join Game
+                        </button>
+                    </div>
+                </CSSTransition>
+
+                <CSSTransition
+                    in={creatingGame}
+                    unmountOnExit
+                    timeout={800}
+                    classNames='create-menu'
+                >
+                    <div>
+                        <form className='text-form' onSubmit={handleRoomCreate}>
+                        <label className='form-label'>
+                            Username:
+                        </label>
+                        <input
+                                className='form-text-input'
+                                type="text"
+                                required
+                                placeholder='Username'
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        <input
+                            className='form-button submit-button'
+                            type="submit"
+                            value="Create Room"
+                        />
+                    </form>  
+                    <ArrowBackIosIcon className='back-button' onClick={menuBack}/>
+                    </div>
+                </CSSTransition>
+
+                <CSSTransition
+                    in={joiningGame}
+                    unmountOnExit
+                    timeout={800}
+                    classNames='join-menu'
+                >
+                    <div>
+                        <form className='text-form' onSubmit={handleRoomSubmit}>
+                            <div>
+                                <div style={{display:'inline-block'}}>
+                                    <label className='form-label'>
+                                        Username:
+                                    </label>
+                                    <input
+                                        className='form-text-input'
+                                        type="text"
+                                        required
+                                        placeholder='Username'
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </div>
+                                <div style={{display:'inline-block'}}>
+                                    <label className='form-label'>
+                                        Room Code:
+                                    </label>
+                                    <input 
+                                        className='form-text-input'
+                                        type="text"
+                                        required
+                                        placeholder='Room Code'
+                                        value={roomcode}
+                                        onChange={(e) => setRoomcode(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <input
+                                className='form-button submit-button'
+                                type="submit"
+                                value="Join Room"
+                            />
+                        </form>
+                        <ArrowBackIosIcon className='back-button' onClick={menuBack}/>
+                    </div>
+                </CSSTransition>
+            </div>
+        </div>
     </div>
   )
 }

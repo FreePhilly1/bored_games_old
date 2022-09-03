@@ -3,7 +3,7 @@ import { SocketContext, socket } from './contexts/socket.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //pages and components
-import StartMenu from './pages/StartPage';
+import StartPage from './pages/StartPage';
 import GamePage from './pages/GamePage';
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
           <Routes>
             <Route 
               path="/"
-              element={<StartMenu/>}
+              element={<StartPage/>}
             ></Route>
             <Route
               path="/game/room"
