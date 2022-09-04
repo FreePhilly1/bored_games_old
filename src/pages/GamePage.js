@@ -4,13 +4,13 @@ import Chat from '../components/Chat.js';
 import Players from '../components/Players.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
+import StartButton from '../components/StartButton.js';
 
 function GamePage() {
   const socket = useContext(SocketContext);
   let location = useLocation();
   const username = location.state.username;
   const [gameObject, setGameObject] = useState(location.state.gameObject);
-  console.log(gameObject);
 
   useEffect(() => {
     socket.on('game-state', ({ gameObject }) => {
@@ -22,6 +22,7 @@ function GamePage() {
     <>
       <div>GamePage</div>
       <Chat roomcode={gameObject.roomcode} username={username}/>
+      <Players gameObject={gameObject}/>
       <div>
         Room: {gameObject.roomcode}
       </div>
@@ -31,6 +32,7 @@ function GamePage() {
       <div>
         Host: {gameObject.host}
       </div>
+      <StartButton gameObject={gameObject} username={username}/>
     </>
   )
 }

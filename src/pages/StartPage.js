@@ -27,6 +27,10 @@ export default function StartPage(props) {
         socket.on('invalid-roomcode', () => {
             console.log('Invalid Roomcode, Try again');
         }, [socket]);
+
+        socket.on('full-gameroom', () => {
+            console.log('Room full, Try another room');
+        }, [socket]);
     });
 
     const handleRoomSubmit = (e) => {
