@@ -10,6 +10,7 @@ function GamePage() {
   let location = useLocation();
   const username = location.state.username;
   const [gameObject, setGameObject] = useState(location.state.gameObject);
+  console.log(gameObject);
 
   useEffect(() => {
     socket.on('game-state', ({ gameObject }) => {

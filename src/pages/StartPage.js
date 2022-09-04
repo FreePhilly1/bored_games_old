@@ -18,8 +18,16 @@ export default function StartPage(props) {
     useEffect(() => {
         socket.on('game-state', ({ gameObject }) => {
             navigate('/game/room', { state: { gameObject, username } });
-        }) 
-    }, [socket]);
+        }, [socket, navigate, username]);
+
+        socket.on('duplicate-username', () => {
+            console.log('Username already exists, Choose Another');
+        }, [socket]);
+        
+        socket.on('invalid-roomcode', () => {
+            console.log('Invalid Roomcode, Try again');
+        }, [socket]);
+    });
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
