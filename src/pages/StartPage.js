@@ -16,16 +16,15 @@ export default function StartPage(props) {
     const [joiningGame, setJoiningGame] = useState(false);
 
     useEffect(() => {
-        socket.on('game-state', (data) => {
-            navigate('/game/room', { state: {roomData: data, username } });
+        socket.on('game-state', ({ gameObject }) => {
+            navigate('/game/room', { state: { gameObject, username } });
         }) 
     }, [socket]);
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
         if (roomcode !== "" && username !== "") {
-            let joinData = {username, roomcode};
-            socket.emit('join-room', joinData);
+            socket.emit('join-room', {username, roomcode});
         }
     }
 
