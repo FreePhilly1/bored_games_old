@@ -6,6 +6,10 @@ import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 import StartButton from '../components/StartButton.js';
 import ActionPanel from '../components/ActionPanel.js';
+import ActionMessage from '../components/ActionMessage.js';
+import ResponsePanel from '../components/ResponsePanel.js';
+import ChallengePanel from '../components/ChallengePanel.js';
+import SelectCardPanel from '../components/SelectCardPanel.js';
 
 function GamePage() {
   const socket = useContext(SocketContext);
@@ -18,6 +22,8 @@ function GamePage() {
       setGameObject(gameObject);
     }, [socket]);
   });
+
+  console.log(gameObject);
 
   return (
     <>
@@ -35,6 +41,10 @@ function GamePage() {
       </div>
       <StartButton gameObject={gameObject} username={username}/>
       <ActionPanel gameObject={gameObject} username={username}/>
+      <ActionMessage gameObject={gameObject}/>
+      <ResponsePanel gameObject={gameObject} username={username}/>
+      <ChallengePanel gameObject={gameObject} username={username}/>
+      <SelectCardPanel gameObject={gameObject} username={username}/>
     </>
   )
 }

@@ -21,6 +21,18 @@ export default function ActionPanel(props) {
         await socket.emit('regular-action', { actionData, roomcode } );
     }
 
+    const handleForeignAid = async (e) => {
+        e.preventDefault();
+        let actionData = { user: username, action: "foreignAid" };
+        await socket.emit('special-action', { actionData, roomcode });
+    }
+
+    const handleTax = async (e) => {
+        e.preventDefault();
+        let actionData = { user: username, action: "tax" };
+        await socket.emit('special-action', { actionData, roomcode });
+    }
+
     const handleCoup = async (e) => {
         e.preventDefault();
         let actionData = { user: username, action: "coup", target:"philly", guess:"duke"}
@@ -28,19 +40,18 @@ export default function ActionPanel(props) {
     }
 
     return (
-        gameObject.gameStart &&
+        gameObject.gameStart && gameObject.selectAction &&
         currentPlayer === username && 
         <>
-            {
-            gameObject.playerStates[username].coins < 10 &&
-            <>
-                <button onClick={handleIncome}>Income</button>
-                <button>Foreign Aid</button>
-                <button>Tax</button>
-                <button>Assassinate</button>
-                <button>Steal</button>
-                <button>Exchange</button>
-            </>
+            {gameObject.playerStates[username].coins < 10 &&
+                <>
+                    <button onClick={handleIncome}>Income</button>
+                    <button onClick={handleForeignAid}>Foreign Aid</button>
+                    <button onClick={handleTax}>Tax</button>
+                    <button>Assassinate</button>
+                    <button>Steal</button>
+                    <button>Exchange</button>
+                </>
             }
             <button onClick={handleCoup}>Coup</button>
         </>
