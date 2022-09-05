@@ -5,6 +5,7 @@ import Players from '../components/Players.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 import StartButton from '../components/StartButton.js';
+import ActionPanel from '../components/ActionPanel.js';
 
 function GamePage() {
   const socket = useContext(SocketContext);
@@ -33,6 +34,7 @@ function GamePage() {
         Host: {gameObject.host}
       </div>
       <StartButton gameObject={gameObject} username={username}/>
+      <ActionPanel gameObject={gameObject} username={username}/>
     </>
   )
 }

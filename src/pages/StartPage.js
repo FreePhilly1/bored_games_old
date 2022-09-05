@@ -31,6 +31,10 @@ export default function StartPage(props) {
         socket.on('full-gameroom', () => {
             console.log('Room full, Try another room');
         }, [socket]);
+
+        socket.on('game-inprogress', () => {
+            console.log('Game already started, Try another room');
+        }, [socket]);
     });
 
     const handleRoomSubmit = (e) => {
