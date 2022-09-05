@@ -16,7 +16,13 @@ export default function SelectCardPanel(props) {
 
     const submitCard = async (e) => {
         e.preventDefault();
-        await socket.emit('select-card-challenge', { roomcode, cardIdx: e.target.value, username });
+        let data = {roomcode, cardIdx: e.target.value, username};
+        if (gameObject.blockInProgress) {
+            data.block = true;
+        } else {
+            data.block = false;
+        }
+        await socket.emit('select-card-challenge', data);
     };
 
     return (
@@ -25,7 +31,7 @@ export default function SelectCardPanel(props) {
         <>
         {
             gameObject.playerStates[username].cards.map((card, idx) => {
-                return (<button className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
+                return (<button style={{backgroundColor: "green"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
             })
         }
         </>

@@ -41,6 +41,9 @@ function GamePage() {
       <div>
         Host: {gameObject.host}
       </div>
+      <div>
+        Deck: {gameObject.deck.toString()}
+      </div>
       <StartButton gameObject={gameObject} username={username}/>
       <ActionPanel gameObject={gameObject} username={username}/>
       <ActionMessage gameObject={gameObject}/>

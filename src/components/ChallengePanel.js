@@ -26,7 +26,7 @@ export default function ChallengePanel(props) {
         <>
         {
             gameObject.playerStates[username].cards.map((card, idx) => {
-                return (<button className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
+                return (<button style = {{backgroundColor: "blue"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
             })
         }
         </>
