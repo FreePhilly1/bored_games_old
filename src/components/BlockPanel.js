@@ -27,7 +27,7 @@ export default function BlockPanel(props) {
 
     return (
         gameObject.gameStart && gameObject.blockInProgress && !gameObject.challengeInProgress &&
-        gameObject.blocker !== username && !gameObject.voters.includes(username) &&
+        !gameObject.challengerLost && gameObject.blocker !== username && !gameObject.voters.includes(username) &&
         <>
             <button onClick={sendChallenge}>Challenge</button>
             <button onClick={sendPass}>Pass</button>
