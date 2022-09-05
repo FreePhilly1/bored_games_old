@@ -16,7 +16,7 @@ export default function SelectCardPanel(props) {
 
     const submitCard = async (e) => {
         e.preventDefault();
-        await socket.emit('remove-card', { roomcode, cardIdx: e.target.value, username });
+        await socket.emit('select-card-challenge', { roomcode, cardIdx: e.target.value, username });
     };
 
     return (
