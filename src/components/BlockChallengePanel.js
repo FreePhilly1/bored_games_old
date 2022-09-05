@@ -2,10 +2,11 @@ import React from 'react';
 import { useContext, useEffect } from 'react';
 import { SocketContext } from '../contexts/socket.js';
 
-export default function SelectCardPanel(props) {
+export default function BlockChallengePanel(props) {
     const socket = useContext(SocketContext);
     let gameObject = props.gameObject;
     let username = props.username;
+    let currentAction = gameObject.currentAction;
     let roomcode = gameObject.roomcode;
 
     useEffect(() => {
@@ -16,22 +17,16 @@ export default function SelectCardPanel(props) {
 
     const submitCard = async (e) => {
         e.preventDefault();
-        let data = {roomcode, cardIdx: e.target.value, username};
-        if (gameObject.blockInProgress) {
-            data.block = true;
-        } else {
-            data.block = false;
-        }
-        await socket.emit('select-card-challenge', data);
+        await socket.emit('send-card-block-challenge', { roomcode, cardIdx: e.target.value });
     };
 
     return (
-        gameObject.gameStart && gameObject.challengerLost &&
-        username === gameObject.challenger &&
+        gameObject.gameStart && gameObject.blockInProgress && gameObject.challengeInProgress &&
+        username === gameObject.blocker &&
         <>
         {
             gameObject.playerStates[username].cards.map((card, idx) => {
-                return (<button style={{backgroundColor: "green"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
+                return (<button style= {{backgroundColor: "red"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
             })
         }
         </>

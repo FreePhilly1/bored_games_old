@@ -10,6 +10,10 @@ import ActionMessage from '../components/ActionMessage.js';
 import ResponsePanel from '../components/ResponsePanel.js';
 import ChallengePanel from '../components/ChallengePanel.js';
 import SelectCardPanel from '../components/SelectCardPanel.js';
+import BlockPanel from '../components/BlockPanel.js';
+import BlockChallengePanel from '../components/BlockChallengePanel.js';
+import AmbassadorPanel from '../components/AmbassadorPanel.js';
+import AssassinPanel from '../components/AssassinPanel.js';
 
 import './GamePage.css';
 
@@ -112,12 +116,19 @@ function GamePage() {
       <div>
         Host: {gameObject.host}
       </div>
+      <div>
+        Deck: {gameObject.deck.toString()}
+      </div>
       <StartButton gameObject={gameObject} username={username}/>
       <ActionPanel gameObject={gameObject} username={username}/>
       <ActionMessage gameObject={gameObject}/>
       <ResponsePanel gameObject={gameObject} username={username}/>
       <ChallengePanel gameObject={gameObject} username={username}/>
       <SelectCardPanel gameObject={gameObject} username={username}/>
+      <BlockPanel gameObject={gameObject} username={username}/>
+      <BlockChallengePanel gameObject={gameObject} username={username}/>
+      <AmbassadorPanel gameObject={gameObject} username={username}/>
+      <AssassinPanel gameObject={gameObject} username={username}/>
     </>
   )
 }

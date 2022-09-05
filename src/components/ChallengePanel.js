@@ -21,12 +21,12 @@ export default function ChallengePanel(props) {
     };
 
     return (
-        gameObject.gameStart && gameObject.challengeInProgress &&
+        gameObject.gameStart && gameObject.challengeInProgress && !gameObject.blockInProgress &&
         currentAction.user === username &&
         <>
         {
             gameObject.playerStates[username].cards.map((card, idx) => {
-                return (<button className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
+                return (<button style = {{backgroundColor: "blue"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
             })
         }
         </>
