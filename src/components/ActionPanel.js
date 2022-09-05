@@ -31,12 +31,17 @@ export default function ActionPanel(props) {
         gameObject.gameStart &&
         currentPlayer === username && 
         <>
-            <button onClick={handleIncome}>Income</button>
-            <button>Foreign Aid</button>
-            <button>Tax</button>
-            <button>Assassinate</button>
-            <button>Steal</button>
-            <button>Exchange</button>
+            {
+            gameObject.playerStates[username].coins < 10 &&
+            <>
+                <button onClick={handleIncome}>Income</button>
+                <button>Foreign Aid</button>
+                <button>Tax</button>
+                <button>Assassinate</button>
+                <button>Steal</button>
+                <button>Exchange</button>
+            </>
+            }
             <button onClick={handleCoup}>Coup</button>
         </>
     );
