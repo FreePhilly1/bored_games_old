@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Players(props) {
+export default function PlayerCards(props) {
     let gameObject = props.gameObject;
     let playerStates = gameObject.playerStates;
     return (

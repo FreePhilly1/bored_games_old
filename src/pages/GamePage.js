@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import Chat from '../components/Chat.js';
-import Players from '../components/Players.js';
+import PlayerCards from '../components/PlayerCards.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 import StartButton from '../components/StartButton.js';
@@ -23,7 +23,7 @@ function GamePage() {
     <>
       <div>GamePage</div>
       <Chat roomcode={gameObject.roomcode} username={username}/>
-      <Players gameObject={gameObject}/>
+      <PlayerCards gameObject={gameObject}/>
       <div>
         Room: {gameObject.roomcode}
       </div>
