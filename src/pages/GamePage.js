@@ -10,6 +10,8 @@ import ActionMessage from '../components/ActionMessage.js';
 import ResponsePanel from '../components/ResponsePanel.js';
 import ChallengePanel from '../components/ChallengePanel.js';
 import SelectCardPanel from '../components/SelectCardPanel.js';
+import BlockPanel from '../components/BlockPanel.js';
+import BlockChallengePanel from '../components/BlockChallengePanel.js';
 
 function GamePage() {
   const socket = useContext(SocketContext);
@@ -45,6 +47,8 @@ function GamePage() {
       <ResponsePanel gameObject={gameObject} username={username}/>
       <ChallengePanel gameObject={gameObject} username={username}/>
       <SelectCardPanel gameObject={gameObject} username={username}/>
+      <BlockPanel gameObject={gameObject} username={username}/>
+      <BlockChallengePanel gameObject={gameObject} username={username}/>
     </>
   )
 }

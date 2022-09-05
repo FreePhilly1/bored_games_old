@@ -2,7 +2,7 @@ import React from 'react';
 import { useContext, useEffect } from 'react';
 import { SocketContext } from '../contexts/socket.js';
 
-export default function ChallengePanel(props) {
+export default function BlockChallengePanel(props) {
     const socket = useContext(SocketContext);
     let gameObject = props.gameObject;
     let username = props.username;
@@ -17,16 +17,16 @@ export default function ChallengePanel(props) {
 
     const submitCard = async (e) => {
         e.preventDefault();
-        await socket.emit('send-card-challenge', { roomcode, cardIdx: e.target.value });
+        await socket.emit('send-card-block-challenge', { roomcode, cardIdx: e.target.value });
     };
 
     return (
-        gameObject.gameStart && gameObject.challengeInProgress && !gameObject.blockInProgress &&
-        currentAction.user === username &&
+        gameObject.gameStart && gameObject.blockInProgress && gameObject.challengeInProgress &&
+        username === gameObject.blocker &&
         <>
         {
             gameObject.playerStates[username].cards.map((card, idx) => {
-                return (<button className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
+                return (<button style= {{backgroundColor: "red"}} className={`${card}-card`} value={idx} onClick={submitCard}>{card}</button>)
             })
         }
         </>
