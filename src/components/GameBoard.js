@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import PlayerCards from '../components/PlayerCards.js';
+import PlayerCards from './PlayerCard.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 import StartButton from '../components/StartButton.js';
@@ -28,6 +28,7 @@ import CoinStack from '../svgs/coin-stack.svg'
 import CardStack from '../svgs/deck.svg';
 import PlaceHolder from '../svgs/placeholder.svg';
 import CoinAngled from '../svgs/coin-angled.svg';
+import PlayerConsole from './PlayerConsole.js';
 
 function GameBoard(props) {
   const socket = useContext(SocketContext);
@@ -77,17 +78,8 @@ function GameBoard(props) {
           </div>
         </div>
 
-        <div className='player-items'>
-          <div className='coins'>
-            {/* for (int i = 0; i < coins; i++) */}
-            <img className='coin' src={CoinAngled} alt='COIN' width='130px' style={{bottom: '0px'}}></img>
-            <img className='coin' src={CoinAngled} alt='COIN' width='130px' style={{bottom: '10px'}}></img>
-            <img className='coin' src={CoinAngled} alt='COIN' width='130px' style={{bottom: '20px'}}></img>
-          </div>
-          <img className='player-card-1' src={CaptainSVG} alt='CAPTAIN' height='340px'></img>
-          <img className='player-card-2' src={AssassinSVG} alt='ASSASSIN' height='340px'></img>
-        </div>
-        
+        <PlayerConsole gameObject={gameObject} username={username}/>
+
         <div className='info-box'>
           <PlayerCards gameObject={gameObject}/>
           <div>
