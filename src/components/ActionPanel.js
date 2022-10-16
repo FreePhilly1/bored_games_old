@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useContext, useEffect } from 'react';
 import { SocketContext } from '../contexts/socket.js';
 
@@ -8,6 +8,9 @@ export default function ActionPanel(props) {
     let username = props.username;
     let roomcode = gameObject.roomcode;
     let currentPlayer = gameObject.players[gameObject.turnIdx];
+    const [selectTarget, setSelectTarget] = useState(false);
+    const [targetType, setTargetType] = useState("");
+    console.log(targetType);
 
     useEffect(() => {
         socket.on('asdf', () => {
@@ -33,18 +36,6 @@ export default function ActionPanel(props) {
         await socket.emit('special-action', { actionData, roomcode });
     }
 
-    const handleAssassinate = async (e) => {
-        e.preventDefault();
-        let actionData = { user: username, action: "assassinate", target: "philly" };
-        await socket.emit('special-action', { actionData, roomcode });
-    }
-
-    const handleSteal = async (e) => {
-        e.preventDefault();
-        let actionData = { user: username, action: "steal", target: "philly" };
-        await socket.emit('special-action', { actionData, roomcode });
-    }
-
     const handleExchange = async (e) => {
         e.preventDefault();
         let actionData = { user: username, action: "exchange" };
@@ -57,21 +48,56 @@ export default function ActionPanel(props) {
         await socket.emit('regular-action', { actionData, roomcode} );
     }
 
+    const chooseTarget = (e) => {
+        e.preventDefault();
+        setSelectTarget(true);
+        setTargetType(e.target.value);
+    }
+
+    const handleTargetedAction = async (e) => {
+        setSelectTarget(false);
+        let actionData = { user: username, target: e.target.value };
+        switch(targetType) {
+            case "a":
+                actionData.action = "assassinate";
+                break;
+            case "s":
+                actionData.action = "steal";
+                break;
+            default:
+                console.log("This should not be printed");
+        }
+        await socket.emit('special-action', { actionData, roomcode });
+    }
+
     return (
         gameObject.gameStart && gameObject.selectAction &&
         currentPlayer === username && 
+            (selectTarget ? 
+        <>
+            <button onClick={() => setSelectTarget(false)}>back</button>
+            {gameObject.players.map(player => {
+                if (player !== username && gameObject.playerStates[player].cards.length > 0) {
+                    return (
+                        <button onClick={handleTargetedAction} value={player}>{player}</button>
+                    );
+                }
+                return (<></>);
+            })}
+        </>
+        :
         <>
             {gameObject.playerStates[username].coins < 10 &&
                 <>
                     <button onClick={handleIncome}>Income</button>
                     <button onClick={handleForeignAid}>Foreign Aid</button>
                     <button onClick={handleTax}>Tax</button>
-                    <button onClick={handleAssassinate}>Assassinate</button>
-                    <button onClick={handleSteal}>Steal</button>
+                    <button onClick={chooseTarget} value="a">Assassinate</button>
+                    <button onClick={chooseTarget} value="s">Steal</button>
                     <button onClick={handleExchange}>Exchange</button>
                 </>
             }
             <button onClick={handleCoup}>Coup</button>
-        </>
+        </>)
     );
 }
