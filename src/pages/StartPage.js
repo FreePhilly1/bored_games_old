@@ -1,57 +1,54 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { SocketContext } from '../contexts/socket.js';
-import './StartPage.css';
-import '../styles.css';
 import { CSSTransition } from 'react-transition-group';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import './StartPage.css';
+import '../styles.css';
 
 export default function StartPage(props) {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [roomcode, setRoomcode] = useState('');
+    const usernameRef = useRef();
+    const roomcodeRef = useRef();
     const [creatingGame, setCreatingGame] = useState(false);
     const [joiningGame, setJoiningGame] = useState(false);
 
     useEffect(() => {
         socket.on('game-state', ({ gameObject }) => {
-            navigate('/game/room', { state: { gameObject, username } });
-        }, [socket, navigate, username]);
+            navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username: usernameRef.current.value } });
+        });
 
         socket.on('duplicate-username', () => {
-            console.log('Username already exists, Choose Another');
-        }, [socket]);
+            alert('Username already exists, Choose Another');
+        });
         
         socket.on('invalid-roomcode', () => {
-            console.log('Invalid Roomcode, Try again');
-        }, [socket]);
+            alert('Invalid Roomcode, Try again');
+        });
 
         socket.on('full-gameroom', () => {
-            console.log('Room full, Try another room');
-        }, [socket]);
+            alert('Room full, Try another room');
+        });
 
         socket.on('game-inprogress', () => {
-            console.log('Game already started, Try another room');
-        }, [socket]);
-    });
+            alert('Game in Progress, Try another room');
+        });
+    }, [socket, navigate]);
+
+    
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
-        if (roomcode !== "" && username !== "") {
-            socket.emit('join-room', {username, roomcode});
-        }
+        socket.emit('join-room', {username: usernameRef.current.value, roomcode: roomcodeRef.current.value});
     }
 
     const handleRoomCreate = (e) => {
         e.preventDefault();
-        if (username !== "") {
-            socket.emit('create-room', { username });
-        }
+        socket.emit('create-room', { username: usernameRef.current.value });
     }
 
-    let menuNavigationButton;
     const menuBack = () => {
         setCreatingGame(false);
         setJoiningGame(false);
@@ -86,16 +83,16 @@ export default function StartPage(props) {
                     classNames='create-menu'
                 >
                     <form className='text-form' onSubmit={handleRoomCreate}>
-                    <label className='form-label'>
+                    <label className='form-label' for='username-field-create'>
                         Username:
                     </label>
                     <input
-                            className='form-text-input'
-                            type="text"
-                            required
-                            placeholder='Username'
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                        id='username-field-create'
+                        className='form-text-input'
+                        type="text"
+                        required
+                        placeholder='Username'
+                        ref={usernameRef}
                         />
                     <input
                         className='form-button submit-button'
@@ -116,29 +113,29 @@ export default function StartPage(props) {
                     <form className='text-form' onSubmit={handleRoomSubmit}>
                         <div>
                             <div style={{display:'inline-block'}}>
-                                <label className='form-label'>
+                                <label className='form-label' for='username-field'>
                                     Username:
                                 </label>
                                 <input
+                                    id='username-field'
                                     className='form-text-input'
                                     type="text"
                                     required
                                     placeholder='Username'
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    ref={usernameRef}
                                 />
                             </div>
                             <div style={{display:'inline-block'}}>
-                                <label className='form-label'>
+                                <label className='form-label' for='roomcode-field'>
                                     Room Code:
                                 </label>
-                                <input 
+                                <input
+                                    id='roomcode-field'
                                     className='form-text-input'
                                     type="text"
                                     required
                                     placeholder='Room Code'
-                                    value={roomcode}
-                                    onChange={(e) => setRoomcode(e.target.value)}
+                                    ref={roomcodeRef}
                                 />
                             </div>
                         </div>

@@ -17,7 +17,7 @@ function App() {
               element={<StartPage/>}
             ></Route>
             <Route
-              path="/game/room"
+              path="/room/:roomcode"
               element={<GamePage/>}
             ></Route>
           </Routes>
