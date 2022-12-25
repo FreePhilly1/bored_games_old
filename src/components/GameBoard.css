@@ -4,9 +4,6 @@ body {
 
 .game-screen {
     display: flex;
-    
-    height: 100vh;
-    width: 100%;
     outline: auto;
 }
 

@@ -46,7 +46,6 @@ function GameBoard(props) {
   return (
     <>
       <div className='game-screen'>
-        <div className='header'>GamePage</div>
 
         <div className='deck'>
           <img src={CardStack} alt='BACK' height='150px'></img>
@@ -82,15 +81,6 @@ function GameBoard(props) {
 
         <div className='info-box'>
           <PlayerCards gameObject={gameObject}/>
-          <div>
-            Room: {gameObject.roomcode}
-          </div>
-          <div>
-            Players: {gameObject.players.toString()}
-          </div>
-          <div>
-            Host: {gameObject.host}
-          </div>
           <StartButton gameObject={gameObject} username={username}/>
           <ActionPanel gameObject={gameObject} username={username}/>
           <ActionMessage gameObject={gameObject}/>

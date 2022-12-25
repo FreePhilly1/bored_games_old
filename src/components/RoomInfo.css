@@ -1,0 +1,19 @@
+.room-info-container {
+    background-color: #696161;
+    height: 10%;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.roomcode-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.roomcode-copy-button {
+    background-color: rgb(228, 186, 110);
+    border: none;
+    border-radius: 5px;
+}

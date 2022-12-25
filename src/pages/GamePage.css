@@ -1,5 +1,18 @@
-.chat {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
+.gamepage-background {
+    height: 100vh;
+    width: 100vw;
+    background-color: #2d3038;
+    display: flex;
+}
+
+.gameboard-column {
+    height: 95%;
+    width: 80%;
+    margin: 20px;
+}
+
+.chat-column {
+    width: 20%;
+    height: 95%;
+    margin: 20px;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import Chat from '../components/Chat.js';
 import GameBoard from '../components/GameBoard.js';
+import RoomInfo from '../components/RoomInfo.js';
 import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 
@@ -20,14 +21,15 @@ function GamePage() {
   }, [socket]);
 
   return (
-    <>
-      <div>
+    <div className='gamepage-background'>
+      <div className='gameboard-column'>
         <GameBoard gameObject={gameObject} username={username}/>
       </div>
-      <div className='chat'>
+      <div className='chat-column'>
+        <RoomInfo roomcode={gameObject.roomcode} host={gameObject.host}/>
         <Chat roomcode={gameObject.roomcode} username={username}/>
       </div>
-    </>
+    </div>
   )
 }
 
