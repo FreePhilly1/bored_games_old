@@ -48,6 +48,8 @@
   justify-self: end;
   font-size: large;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 ::-webkit-scrollbar {

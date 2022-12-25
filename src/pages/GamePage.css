@@ -3,6 +3,7 @@
     width: 100vw;
     background-color: #2d3038;
     display: flex;
+    overflow: auto;
 }
 
 .gameboard-column {

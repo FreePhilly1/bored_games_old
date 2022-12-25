@@ -49,7 +49,6 @@ function GameBoard(props) {
 
         <div className='deck'>
           <img src={CardStack} alt='BACK' height='150px'></img>
-          <img src={CoinStack} alt='BACK' height='150px'></img>
         </div>
         
         <div className='table'>
