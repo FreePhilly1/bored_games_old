@@ -23,9 +23,9 @@ function GameBoard(props) {
     <>
       <div className='game-screen'>
         <GameTable username={username} players={gameObject.players} playerStates={gameObject.playerStates}/>
+        <StartButton gameObject={gameObject} username={username}/>
 
         <div className='info-box'>
-          <StartButton gameObject={gameObject} username={username}/>
           <ActionPanel gameObject={gameObject} username={username}/>
           <ActionMessage gameObject={gameObject}/>
           <ResponsePanel gameObject={gameObject} username={username}/>

@@ -1,15 +1,8 @@
 import React from 'react';
-import { useState, useContext } from 'react';
-import { SocketContext } from '../contexts/socket.js';
+import Card from './Card.js';
 import './GameTable.css';
 
 //SVGs
-import AmbassadorSVG from '../svgs/ambassador.svg';
-import AssassinSVG from '../svgs/assassin.svg';
-import CaptainSVG from '../svgs/captain.svg';
-import CoinSVG from '../svgs/coin.svg';
-import ContessaSVG from '../svgs/contessa.svg';
-import DukeSVG from '../svgs/duke.svg';
 import BackSVG from '../svgs/back.svg';
 
 function GameTable(props) {
@@ -29,17 +22,22 @@ function GameTable(props) {
                 return(
                 <div className={`other-${boardIdx}`}>
                     <h2 className='name-tag'>{player}</h2>
-                    {/* {playerStates && } */}
-                    <img className='other-card-1' src={BackSVG} alt='BACK' height='150px'></img>
-                    <img className='other-card-2' src={BackSVG} alt='BACK' height='150px'></img>
+                    {playerStates.hasOwnProperty(player) && playerStates[player].cards.map((card, idx) => {
+                        return (
+                            <img className={`other-card-${idx + 1}`} src={BackSVG} alt='BACK' height='150px'/>
+                        )
+                    })}
                 </div>
                 )}
             )}
 
           <div className='player-hand'>
             <h2 className='name-tag-hand'>{username}</h2>
-            <img className='other-card-1' src={BackSVG} alt='BACK' height='200px'></img>
-            <img className='other-card-2' src={BackSVG} alt='BACK' height='200px'></img>
+            {playerStates.hasOwnProperty(username) && playerStates[username].cards.map((card, idx) => {
+                return (
+                    <Card idx={idx} card={card}/>
+                )
+            })}
           </div>
         </div>
     </>

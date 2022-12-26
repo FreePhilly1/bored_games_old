@@ -18,7 +18,6 @@ function GamePage() {
   useEffect(() => {
     socket.on('game-state', ({ gameObject }) => {
       setGameObject(gameObject);
-      console.log('hi is this working');
     }, [socket]);
   });
 
