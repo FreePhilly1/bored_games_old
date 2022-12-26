@@ -10,7 +10,6 @@ export default function ActionPanel(props) {
     let currentPlayer = gameObject.players[gameObject.turnIdx];
     const [selectTarget, setSelectTarget] = useState(false);
     const [targetType, setTargetType] = useState("");
-    console.log(targetType);
 
     useEffect(() => {
         socket.on('asdf', () => {
@@ -89,12 +88,12 @@ export default function ActionPanel(props) {
         <>
             {gameObject.playerStates[username].coins < 10 &&
                 <>
-                    <button onClick={handleIncome}>Income</button>
-                    <button onClick={handleForeignAid}>Foreign Aid</button>
-                    <button onClick={handleTax}>Tax</button>
-                    <button onClick={chooseTarget} value="a">Assassinate</button>
-                    <button onClick={chooseTarget} value="s">Steal</button>
-                    <button onClick={handleExchange}>Exchange</button>
+                    <button className="-button" onClick={handleIncome}>Income</button>
+                    <button className="-button" onClick={handleForeignAid}>Foreign Aid</button>
+                    <button className="-button" onClick={handleTax}>Tax</button>
+                    <button className="-button" onClick={chooseTarget} value="a">Assassinate</button>
+                    <button className="-button" onClick={chooseTarget} value="s">Steal</button>
+                    <button className="-button" onClick={handleExchange}>Exchange</button>
                 </>
             }
             <button onClick={handleCoup}>Coup</button>

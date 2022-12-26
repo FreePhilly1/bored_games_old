@@ -1,0 +1,57 @@
+.table {
+    position: relative;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.other-0 {
+    position: absolute;
+    transform: translate(-175%, 0);
+}
+
+.other-1 {
+    position: absolute;
+    transform: translate(-100%, -100%);
+}
+
+.other-2 {
+    position: absolute;
+    transform: translate(0, -175%);
+}
+
+.other-3 {
+    position: absolute;
+    transform: translate(100%, -100%);
+}
+
+.other-4 {
+    position: absolute;
+    transform: translate(175%, 0);
+}
+
+.player-hand {
+    position: absolute;
+    transform: translate(0, 50%);
+}
+
+.name-tag {
+    background-color: orange;
+    padding: 3px 80px 3px 10px;
+    border-radius: 10px;
+    position: absolute;
+    transform: translate(30px, 115px);
+    filter: drop-shadow(2px 2px 4px black);
+}
+
+.name-tag-hand {
+    background-color: orange;
+    padding: 3px 80px 3px 10px;
+    border-radius: 10px;
+    position: absolute;
+    transform: translate(70px, 150px);
+    filter: drop-shadow(2px 2px 4px black);
+}

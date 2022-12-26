@@ -1,35 +1,51 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useState } from 'react';
+import "./StartButton.css";
 
+//SVGs
 import AmbassadorSVG from '../svgs/ambassador.svg';
 import AssassinSVG from '../svgs/assassin.svg';
 import CaptainSVG from '../svgs/captain.svg';
 import ContessaSVG from '../svgs/contessa.svg';
 import DukeSVG from '../svgs/duke.svg';
+import BackSVG from '../svgs/back.svg';
 
+export default function Card(props) {
+    const [front, setFront] = useState(false);
+    const idx = props.idx;
+    const card = props.card;
+    let cardType = BackSVG;
+    switch(card) {
+        case 'captain':
+            cardType = CaptainSVG;
+            break;
+        case 'contessa':
+            cardType = ContessaSVG;
+            break;
+        case 'assassin':
+            cardType = AssassinSVG;
+            break;
+        case 'ambassador':
+            cardType = AmbassadorSVG;
+            break;
+        case 'duke':
+            cardType = DukeSVG;
+            break;
+        default:
+            console.log('Your app is broken');
+    }
 
-function Card(props) {
-    const role = props.role;
-    const renderSwitch = (param) => {
-        switch(param) {
-            case "assassin":
-                return (<img src={AssassinSVG} alt='ASSASSIN' height='340px'></img>);
-            case "ambassador":
-                return (<img src={AmbassadorSVG} alt='AMBASSADOR' height='340px'></img>);
-            case "captain":
-                return (<img src={CaptainSVG} alt='CAPTAIN' height='340px'></img>);
-            case "contessa":
-                return (<img src={ContessaSVG} alt='CONTESSA' height='340px'></img>);
-            case "duke":
-                return (<img src={DukeSVG} alt='DUKE' height='340px'></img>);
-            default:
-                return (<></>);
-        }
+    const flipCard = (e) => {
+        e.preventDefault();
+        setFront(!front);
     }
 
     return (
-        <>{renderSwitch(role)}</>
-    );
+        <>
+            {front
+                ? <img className={`other-card-${idx + 1}`} src={cardType} alt='BACK' height='200px' onClick={flipCard}/>
+                : <img className={`other-card-${idx + 1}`} src={BackSVG} alt='BACK' height='200px' onClick={flipCard}/>
+            }
+        </>
+    )
 }
-
-export default Card;

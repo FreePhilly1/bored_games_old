@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { SocketContext } from '../contexts/socket';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import './Chat.css';
@@ -10,22 +10,22 @@ var gameCode;
 export default function Chat(props) {
     const socket = useContext(SocketContext);
     const { roomcode, username } = props;
-
-    const [ currMsg, setCurrMsg ] = useState('');
+    
+    const messageRef = useRef();
     const [ messageList, setMessageList ] = useState([]);
 
     const sendMessage = async () => {
-        if (currMsg !== "") {
+        if (messageRef.current.value !== "") {
             const messageData = {
                 gameCode: gameCode,
                 username: username,
-                message: currMsg,
+                message: messageRef.current.value,
                 time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
                 roomcode: roomcode
             }
             await socket.emit('send-message', messageData)
             setMessageList((list) => [...list, messageData]);
-            setCurrMsg('');
+            messageRef.current.value = "";
         }
     }
 
@@ -47,16 +47,15 @@ export default function Chat(props) {
                         return (
                         <div
                             className="message"
-                            id={username === messageData.username ? "you" : "other"}
                         >
-                            <div>
-                               <div className="message-content">
-                                   <p>{messageData.message}</p>
-                                </div>
-                                <div className="message-info">
-                                    <p>{messageData.time}</p>
-                                    <p>{messageData.username}</p>
-                                </div>
+                            <div className="message-info">
+                                <p>{messageData.username} | {messageData.time}</p>
+                            </div>
+                            <div
+                                className="message-content"
+                                id={username === messageData.username ? "you" : "other"}
+                            >
+                                <p>{messageData.message}</p>
                             </div>
                         </div>
                     );
@@ -65,15 +64,18 @@ export default function Chat(props) {
         </div>
         <div className="chat-footer">
             <input
+                className='message-input'
                 type="text"
-                value={currMsg}
                 placeholder='send a message'
-                onChange={(e) => {setCurrMsg(e.target.value)}}
+                ref={messageRef}
                 onKeyDown={(e) => {
                     e.key==="Enter" && sendMessage();
                 }}
             />
-            <button onClick={sendMessage}>
+            <button
+                className='chat-send'
+                onClick={sendMessage}
+            >
                 Send
             </button>
         </div>

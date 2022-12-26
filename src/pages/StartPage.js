@@ -10,43 +10,44 @@ import '../styles.css';
 export default function StartPage(props) {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
-    const usernameRef = useRef();
+    // const usernameRef = useRef();
     const roomcodeRef = useRef();
+    const [username, setUsername] = useState('');
     const [creatingGame, setCreatingGame] = useState(false);
     const [joiningGame, setJoiningGame] = useState(false);
 
     useEffect(() => {
         socket.on('game-state', ({ gameObject }) => {
-            navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username: usernameRef.current.value } });
-        });
+            navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username: username } });
+        }, [socket, navigate]);
 
         socket.on('duplicate-username', () => {
             alert('Username already exists, Choose Another');
-        });
+        }, [socket]);
         
         socket.on('invalid-roomcode', () => {
             alert('Invalid Roomcode, Try again');
-        });
+        }, [socket]);
 
         socket.on('full-gameroom', () => {
             alert('Room full, Try another room');
-        });
+        }, [socket]);
 
         socket.on('game-inprogress', () => {
             alert('Game in Progress, Try another room');
-        });
-    }, [socket, navigate]);
+        }, [socket]);
+    });
 
     
 
     const handleRoomSubmit = (e) => {
         e.preventDefault();
-        socket.emit('join-room', {username: usernameRef.current.value, roomcode: roomcodeRef.current.value});
+        socket.emit('join-room', {username, roomcode: roomcodeRef.current.value});
     }
 
     const handleRoomCreate = (e) => {
         e.preventDefault();
-        socket.emit('create-room', { username: usernameRef.current.value });
+        socket.emit('create-room', { username });
     }
 
     const menuBack = () => {
@@ -92,7 +93,8 @@ export default function StartPage(props) {
                         type="text"
                         required
                         placeholder='Username'
-                        ref={usernameRef}
+                        value={username}
+                        onChange={(e) => {setUsername(e.target.value)}}
                         />
                     <input
                         className='form-button submit-button'
@@ -122,7 +124,8 @@ export default function StartPage(props) {
                                     type="text"
                                     required
                                     placeholder='Username'
-                                    ref={usernameRef}
+                                    value={username}
+                                    onChange={(e) => {setUsername(e.target.value)}}
                                 />
                             </div>
                             <div style={{display:'inline-block'}}>
