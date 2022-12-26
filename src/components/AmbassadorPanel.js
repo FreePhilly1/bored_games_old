@@ -8,7 +8,6 @@ export default function AmbassadorPanel(props) {
     let username = props.username;
     let roomcode = gameObject.roomcode;
     const [cards, setCards] = useState([]);
-    console.log(cards);
 
     useEffect(() => {
         socket.on('asdf', () => {

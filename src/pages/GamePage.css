@@ -8,8 +8,10 @@
 
 .gameboard-column {
     height: 95%;
-    width: 80%;
+    width: 85%;
     margin: 20px;
+    background-color: #DEB584;
+    border-radius: 15px;
 }
 
 .chat-column {

@@ -11,14 +11,18 @@ import './GamePage.css';
 function GamePage() {
   const socket = useContext(SocketContext);
   let location = useLocation();
+  console.log(location.state);
   const username = location.state.username;
   const [gameObject, setGameObject] = useState(location.state.gameObject);
+  console.log(gameObject);
+  console.log(username);
 
   useEffect(() => {
     socket.on('game-state', ({ gameObject }) => {
       setGameObject(gameObject);
-    });
-  }, [socket]);
+      console.log('hi is this working');
+    }, [socket]);
+  });
 
   return (
     <div className='gamepage-background'>

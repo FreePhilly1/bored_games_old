@@ -7,6 +7,7 @@ export default function RoomInfo(props) {
 
     const copyRoom = () => {
         navigator.clipboard.writeText(roomcode);
+        alert("Roomcode copied to clipboard");
     }
 
     return (
