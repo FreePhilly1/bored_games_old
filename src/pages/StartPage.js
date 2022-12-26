@@ -15,7 +15,6 @@ export default function StartPage(props) {
     const [username, setUsername] = useState('');
     const [creatingGame, setCreatingGame] = useState(false);
     const [joiningGame, setJoiningGame] = useState(false);
-    console.log(username);
 
     useEffect(() => {
         socket.on('game-state', ({ gameObject }) => {
