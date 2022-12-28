@@ -8,23 +8,25 @@ import GamePage from './pages/GamePage';
 
 function App() {
   return (
-    <SocketContext.Provider value={socket}>
-      <div className="App">
-        <BrowserRouter>
-          <Routes>
-            <Route 
-              path="/"
-              element={<StartPage/>}
-            ></Route>
-            <Route
-              path="/room/:roomcode"
-              element={<GamePage/>}
-            ></Route>
-          </Routes>
-        </BrowserRouter>
-        
-      </div>
-    </SocketContext.Provider>
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route 
+            path="/"
+            element={<StartPage/>}
+          />
+          <Route
+            path="/room/:roomcode"
+            element={
+              <SocketContext.Provider value={socket}>
+                <GamePage/>
+              </SocketContext.Provider>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+      
+    </div>
   );
 }
 

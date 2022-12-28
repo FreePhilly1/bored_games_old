@@ -2,78 +2,84 @@ const app = require('express')();
 const cors = require('cors');
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }));
 const http = require('http').Server(app);
 const crypto = require('crypto');
 const io = require('socket.io')(http, {
     cors: {
         origin: "http://localhost:3000",
-        methods: ["GET", "POST", "PUT", "DELETE"]
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
     }
 });
 const port = process.env.PORT || 5000;
 const CoupGame = require('./CoupGame.js');
 const socketMap = {};
+const roomMap = new Map();
+
+// Create Room
+app.post('/create-room-request', (req, res) => {
+    try {
+        let host = req.query.host;
+
+        // Generate Random Room Code
+        let roomcode = crypto.randomBytes(3).toString('hex');
+
+        // Regenerate Room Code if it already exists
+        while (roomMap.has(roomcode)) {
+            roomcode = crypto.randomBytes(3).toString('hex')
+        }
+        roomMap.set(roomcode, new CoupGame(host, roomcode));
+        let gameObject = roomMap.get(roomcode);
+
+        // Respond with Game Object
+        console.log(roomMap);
+        res.json({ gameObject, status: true });
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+app.patch('/join-room-request', (req, res) => {
+    try {
+        let roomcode = req.query.roomcode;
+        let username = req.query.username;
+        let status;
+        let gameObject;
+        if (roomMap.has(roomcode)) {
+            gameObject = roomMap.get(roomcode);
+            console.log(gameObject);
+            if (gameObject.players.includes(username)) {
+                // Duplicate Username in Lobby
+                status = 'duplicate';
+                gameObject = null;
+            } else if (gameObject.players.length >= 6) {
+                // Gameroom Full
+                status = 'full';
+                gameObject = null;
+            } else if (gameObject.gameStart) {
+                // Game started
+                status = 'inprogress';
+                gameObject = null;
+            } else {
+                // Join Room
+                gameObject.addPlayer(username);
+                status = 'success';
+            }
+        } else {
+            // Wrong Roomcode
+            status = 'invalid';
+        }
+        res.json({ gameObject, status});
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 io.on('connection', (socket) => {
     console.log(`user connected: ${socket.id}`);
     socket.on('message', (msg) => {
         io.emit('message', msg);
-    });
-
-    socket.on('create-room', ({ username }) => {
-        try {
-            // Generate Random Room Code
-            let roomcode = crypto.randomBytes(3).toString('hex');
-
-            // Regenerate Room Code if it already exists
-            while (io.sockets.adapter.rooms.get(roomcode)) {
-                roomcode = crypto.randomBytes(3).toString('hex')
-            } 
-            socket.join(roomcode);
-            let roomState = io.sockets.adapter.rooms.get(roomcode);
-
-            // Create CoupGame instance
-            roomState.gameObject = new CoupGame(username, roomcode);
-            let gameObject = roomState.gameObject;
-            socketMap[socket.id] = [username, roomcode];
-
-            // Emit Game State
-            socket.emit('game-state', { gameObject });
-        } catch (err) {
-            console.log(err);
-        }
-    })
-
-    socket.on('join-room', ({ username, roomcode }) => {
-        try {
-            let roomState = io.sockets.adapter.rooms.get(roomcode);
-            if (roomState) {
-                let gameObject = roomState.gameObject;
-                if (gameObject.players.includes(username)) {
-                    // Duplicate Username in Lobby
-                    socket.emit('duplicate-username');
-                } else if (gameObject.players.length >= 6) {
-                    // Gameroom Full
-                    socket.emit('full-gameroom');
-                } else if (gameObject.gameStart) {
-                    // Game started
-                    socket.emit('game-inprogress');
-                } else {
-                    // Join Room
-                    socket.join(roomcode);
-                    gameObject.addPlayer(username);
-                    socketMap[socket.id] = [username, roomcode];
-                    io.to(roomcode).emit('game-state', { gameObject });
-                }
-            } else {
-                // Wrong Roomcode
-                socket.emit('invalid-roomcode');
-            }
-        } catch (err) {
-            console.log(err);
-        }
     });
     
     // Start Game

@@ -1,53 +1,73 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext, useRef } from 'react';
-import { SocketContext } from '../contexts/socket.js';
+import { useState, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import './StartPage.css';
 import '../styles.css';
 
 export default function StartPage(props) {
-    const socket = useContext(SocketContext);
     const navigate = useNavigate();
-    // const usernameRef = useRef();
+    const usernameRef = useRef();
     const roomcodeRef = useRef();
-    const [username, setUsername] = useState('');
     const [creatingGame, setCreatingGame] = useState(false);
-    const [joiningGame, setJoiningGame] = useState(false);
+    const [joiningGame, setJoiningGame] = useState(false);    
 
-    useEffect(() => {
-        socket.on('game-state', ({ gameObject }) => {
-            navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username: username } });
-        }, [socket, navigate]);
-
-        socket.on('duplicate-username', () => {
-            alert('Username already exists, Choose Another');
-        }, [socket]);
-        
-        socket.on('invalid-roomcode', () => {
-            alert('Invalid Roomcode, Try again');
-        }, [socket]);
-
-        socket.on('full-gameroom', () => {
-            alert('Room full, Try another room');
-        }, [socket]);
-
-        socket.on('game-inprogress', () => {
-            alert('Game in Progress, Try another room');
-        }, [socket]);
-    });
-
-    
-
-    const handleRoomSubmit = (e) => {
+    const handleCreateRoom = async (e) => {
         e.preventDefault();
-        socket.emit('join-room', {username, roomcode: roomcodeRef.current.value});
+        // socket.emit('create-room', { username: usernameRef.current.value });
+        let username = usernameRef.current.value;
+        let url = `http://localhost:5000/create-room-request?host=${username}`;
+        let response = await fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        let responseData = await response.json();
+        let gameObject = responseData.gameObject;
+        if (responseData.status) {
+            navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username }});
+        } else {
+            alert('Unable to Create Room. Try again.');
+        }
     }
 
-    const handleRoomCreate = (e) => {
+    const handleJoinRoom = async (e) => {
         e.preventDefault();
-        socket.emit('create-room', { username });
+        let roomcode = roomcodeRef.current.value;
+        let username = usernameRef.current.value;
+        let url = `http://localhost:5000/join-room-request?roomcode=${roomcode}&username=${username}`;
+        let response = await fetch(url, {
+            method: 'PATCH',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        let responseData = await response.json();
+        let gameObject = responseData.gameObject;
+        switch(responseData.status) {
+            case 'success':
+                navigate(`/room/${gameObject.roomcode}`, { state: { gameObject, username }});
+                break;
+            case 'invalid':
+                alert('Invalid Room Code');
+                break;
+            case 'duplicate':
+                alert('Duplicate Username. Choose another one.');
+                break;
+            case 'full':
+                alert('Room Full. Try another.');
+                break;
+            case 'inprogress':
+                alert('Game In Progress. Try again later');
+                break;
+            default:
+                alert('Something is broken');
+        }
+
     }
 
     const menuBack = () => {
@@ -83,7 +103,7 @@ export default function StartPage(props) {
                     timeout={800}
                     classNames='create-menu'
                 >
-                    <form className='text-form' onSubmit={handleRoomCreate}>
+                    <form className='text-form' onSubmit={handleCreateRoom}>
                     <label className='form-label' for='username-field-create'>
                         Username:
                     </label>
@@ -93,8 +113,7 @@ export default function StartPage(props) {
                         type="text"
                         required
                         placeholder='Username'
-                        value={username}
-                        onChange={(e) => {setUsername(e.target.value)}}
+                        ref={usernameRef}
                         />
                     <input
                         className='form-button submit-button'
@@ -112,7 +131,7 @@ export default function StartPage(props) {
                     timeout={800}
                     classNames='join-menu'
                 >
-                    <form className='text-form' onSubmit={handleRoomSubmit}>
+                    <form className='text-form' onSubmit={handleJoinRoom}>
                         <div>
                             <div style={{display:'inline-block'}}>
                                 <label className='form-label' for='username-field'>
@@ -124,8 +143,7 @@ export default function StartPage(props) {
                                     type="text"
                                     required
                                     placeholder='Username'
-                                    value={username}
-                                    onChange={(e) => {setUsername(e.target.value)}}
+                                    ref={usernameRef}
                                 />
                             </div>
                             <div style={{display:'inline-block'}}>
