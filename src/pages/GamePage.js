@@ -7,18 +7,26 @@ import { useLocation } from 'react-router-dom';
 import { SocketContext } from '../contexts/socket.js';
 
 import './GamePage.css';
+const SOCKET_URL = "http://localhost:5000";
 
 function GamePage() {
   const socket = useContext(SocketContext);
   let location = useLocation();
-  console.log(location.state);
   const username = location.state.username;
   const [gameObject, setGameObject] = useState(location.state.gameObject);
-
+  
   useEffect(() => {
+    
+    socket.emit('game-loaded', { msg: "hello"});
+
     socket.on('game-state', ({ gameObject }) => {
       setGameObject(gameObject);
     }, [socket]);
+
+    return () => {
+      socket.off('game-state');
+      socket.disconnect(SOCKET_URL);
+    }
   });
 
   return (

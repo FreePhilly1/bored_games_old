@@ -15,7 +15,6 @@ export default function StartPage(props) {
 
     const handleCreateRoom = async (e) => {
         e.preventDefault();
-        // socket.emit('create-room', { username: usernameRef.current.value });
         let username = usernameRef.current.value;
         let url = `http://localhost:5000/create-room-request?host=${username}`;
         let response = await fetch(url, {

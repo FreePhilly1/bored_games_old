@@ -23,17 +23,14 @@ app.post('/create-room-request', (req, res) => {
         let host = req.query.host;
 
         // Generate Random Room Code
-        let roomcode = crypto.randomBytes(3).toString('hex');
+        let roomcode = generateRoomCode();
 
-        // Regenerate Room Code if it already exists
-        while (roomMap.has(roomcode)) {
-            roomcode = crypto.randomBytes(3).toString('hex')
-        }
         roomMap.set(roomcode, new CoupGame(host, roomcode));
         let gameObject = roomMap.get(roomcode);
+        io.of(roomcode);
+        
 
         // Respond with Game Object
-        console.log(roomMap);
         res.json({ gameObject, status: true });
     } catch (err) {
         console.log(err);
@@ -48,7 +45,6 @@ app.patch('/join-room-request', (req, res) => {
         let gameObject;
         if (roomMap.has(roomcode)) {
             gameObject = roomMap.get(roomcode);
-            console.log(gameObject);
             if (gameObject.players.includes(username)) {
                 // Duplicate Username in Lobby
                 status = 'duplicate';
@@ -82,6 +78,11 @@ io.on('connection', (socket) => {
         io.emit('message', msg);
     });
     
+    // Game Page loaded
+    socket.on('game-loaded', ({ msg }) => {
+        console.log(msg);
+    });
+
     // Start Game
     socket.on('start-game', ({ roomcode }) => {
         try {
@@ -243,6 +244,16 @@ io.on('connection', (socket) => {
         }
     });
 });
+
+const generateRoomCode = () => {
+    let roomcode = crypto.randomBytes(3).toString('hex');
+
+    // Regenerate Room Code if it already exists
+    while (roomMap.has(roomcode)) {
+        roomcode = crypto.randomBytes(3).toString('hex')
+    }
+    return roomcode;
+}
 
 http.listen(port, () => {
     console.log(`listening on port ${port}`);

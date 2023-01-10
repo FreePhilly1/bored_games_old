@@ -18,10 +18,10 @@ function App() {
           <Route
             path="/room/:roomcode"
             element={
-              <SocketContext.Provider value={socket}>
-                <GamePage/>
-              </SocketContext.Provider>
-            }
+            <SocketContext.Provider value={socket}>
+              <GamePage/>
+            </SocketContext.Provider>
+          }
           />
         </Routes>
       </BrowserRouter>
