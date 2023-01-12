@@ -16,8 +16,8 @@ export default function StartPage(props) {
     const handleCreateRoom = async (e) => {
         e.preventDefault();
         let username = usernameRef.current.value;
-        let url = `http://localhost:5000/create-room-request?host=${username}`;
-        let response = await fetch(url, {
+        let createRoomUrl = `http://localhost:5000/create-room-request?host=${username}`;
+        let response = await fetch(createRoomUrl, {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -37,8 +37,8 @@ export default function StartPage(props) {
         e.preventDefault();
         let roomcode = roomcodeRef.current.value;
         let username = usernameRef.current.value;
-        let url = `http://localhost:5000/join-room-request?roomcode=${roomcode}&username=${username}`;
-        let response = await fetch(url, {
+        let joinRoomUrl = `http://localhost:5000/join-room-request?roomcode=${roomcode}&username=${username}`;
+        let response = await fetch(joinRoomUrl, {
             method: 'PATCH',
             mode: 'cors',
             headers: {

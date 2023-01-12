@@ -1,5 +1,4 @@
 import './App.css';
-import { SocketContext, socket } from './contexts/socket.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 //pages and components
@@ -17,11 +16,7 @@ function App() {
           />
           <Route
             path="/room/:roomcode"
-            element={
-            <SocketContext.Provider value={socket}>
-              <GamePage/>
-            </SocketContext.Provider>
-          }
+            element={<GamePage/>}
           />
         </Routes>
       </BrowserRouter>

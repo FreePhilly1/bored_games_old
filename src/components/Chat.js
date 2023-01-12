@@ -33,9 +33,9 @@ export default function Chat(props) {
         socket.on('receive-message', (data) => {
             console.log(data);
             setMessageList((list) => [...list, data]);
-        }, [socket]);
+        });
         
-    }, [socket]);
+    }, []);
 
     return (
     <div className="chat-window">

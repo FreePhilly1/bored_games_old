@@ -25,7 +25,7 @@ function GameBoard(props) {
         <GameTable username={username} players={gameObject.players} playerStates={gameObject.playerStates}/>
         <StartButton gameObject={gameObject} username={username}/>
 
-        <div className='info-box'>
+        {/* <div className='info-box'>
           <ActionPanel gameObject={gameObject} username={username}/>
           <ActionMessage gameObject={gameObject}/>
           <ResponsePanel gameObject={gameObject} username={username}/>
@@ -35,7 +35,7 @@ function GameBoard(props) {
           <BlockChallengePanel gameObject={gameObject} username={username}/>
           <AmbassadorPanel gameObject={gameObject} username={username}/>
           <AssassinPanel gameObject={gameObject} username={username}/>
-        </div>
+        </div> */}
       
       </div>
     </>
