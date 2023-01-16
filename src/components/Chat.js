@@ -30,10 +30,12 @@ export default function Chat(props) {
     }
 
     useEffect(() => {
-        socket.on('receive-message', (data) => {
-            console.log(data);
-            setMessageList((list) => [...list, data]);
-        });
+        if (socket) {
+            socket.on('receive-message', (data) => {
+                console.log(data);
+                setMessageList((list) => [...list, data]);
+            });
+        }
         
     }, []);
 

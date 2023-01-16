@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Chat from '../components/Chat.js';
 import GameBoard from '../components/GameBoard.js';
 import socketio from "socket.io-client";
@@ -10,13 +10,13 @@ import './GamePage.css';
 const SOCKET_URL = "http://localhost:5000";
 
 function GamePage() {
-  let socket = socketio.connect(SOCKET_URL);
+  let socket;
   let location = useLocation();
   const username = location.state.username;
   const [gameObject, setGameObject] = useState(location.state.gameObject);
   
   useEffect(() => {
-    // socket = socketio.connect(SOCKET_URL);
+    socket = socketio.connect(SOCKET_URL);
     socket.emit('game-loaded', { msg: "hello"});
 
     socket.on('game-state', ({ gameObject }) => {
@@ -44,4 +44,4 @@ function GamePage() {
   )
 }
 
-export default GamePage
+export default GamePage;

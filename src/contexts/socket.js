@@ -4,4 +4,4 @@ import React from "react";
 // const SOCKET_URL = "http://localhost:5000";
 
 // export const socket = socketio.connect(SOCKET_URL);
-export const SocketContext = React.createContext(null);
+export const SocketContext = React.createContext();
